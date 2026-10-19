@@ -34,6 +34,7 @@
             padding: 24px 12px;
             display: flex;
             justify-content: center;
+            align-items: center;
         }
 
         .wrapper {
@@ -42,6 +43,38 @@
             display: flex;
             flex-direction: column;
             gap: 16px;
+        }
+
+        /* Login Screen Style */
+        #login-screen {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 30px 24px;
+            text-align: center;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+        }
+
+        .login-title {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--text-main);
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+        }
+
+        .login-desc {
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-bottom: 20px;
+        }
+
+        #app-container {
+            display: none;
+            flex-direction: column;
+            gap: 16px;
+            width: 100%;
         }
 
         .brand-header {
@@ -240,136 +273,150 @@
 <body>
 
     <div class="wrapper">
-        <div class="brand-header">
-            <span class="brand-title">GrimVerse // Command Center</span>
-            <div class="core-status">
-                <div class="core-dot"></div>
-                <span>ONLINE</span>
+        <!-- LOGIN SCREEN -->
+        <div id="login-screen">
+            <div class="login-title">GrimVerse // Authentication</div>
+            <div class="login-desc">Masukkan akses password untuk masuk ke Command Center.</div>
+            <div class="input-group">
+                <input type="password" id="login-pass" class="control-field" placeholder="Masukkan Password..." style="text-align: center;">
             </div>
+            <button onclick="verifyPassword()" class="exec-btn">AUTHENTICATE</button>
+            <div id="login-msg" class="log-output" style="color: var(--danger); margin-top: 12px;"></div>
         </div>
 
-        <div class="nav-tabs">
-            <button class="tab-btn active" onclick="switchTab('tab-status', this)">STATUS</button>
-            <button class="tab-btn" onclick="switchTab('tab-network', this)">NETWORK</button>
-            <button class="tab-btn" onclick="switchTab('tab-broadcast', this)">BROADCAST</button>
-            <button class="tab-btn" onclick="switchTab('tab-economy', this)">ECONOMY</button>
-        </div>
-
-        <!-- TAB 1: STATUS -->
-        <div id="tab-status" class="panel-card active">
-            <div class="section-header">Server Telemetry Monitor</div>
-            <div class="status-table">
-                <div class="status-line">
-                    <span style="color:var(--text-muted)">NODE TARGET</span>
-                    <span style="color:#60a5fa">Basic-7.mineidhost.com:19155</span>
-                </div>
-                <div class="status-line">
-                    <span style="color:var(--text-muted)">DAEMON STATUS</span>
-                    <div id="live-status" class="pill loading">INITIALIZING...</div>
-                </div>
-                <div class="status-line">
-                    <span style="color:var(--text-muted)">CORE VERSION</span>
-                    <span id="live-version">-</span>
+        <!-- MAIN APP CONTAINER -->
+        <div id="app-container">
+            <div class="brand-header">
+                <span class="brand-title">GrimVerse // Command Center</span>
+                <div class="core-status">
+                    <div class="core-dot"></div>
+                    <span>ONLINE</span>
                 </div>
             </div>
-            <button onclick="sendDiscordUpdate()" id="btn-status" class="exec-btn" style="margin-bottom:14px;">SYNC TELEMETRY TO DISCORD</button>
-            <div id="msg-status" class="log-output"></div>
 
-            <div style="border-top: 1px solid var(--border); margin: 18px 0;"></div>
+            <div class="nav-tabs">
+                <button class="tab-btn active" onclick="switchTab('tab-status', this)">STATUS</button>
+                <button class="tab-btn" onclick="switchTab('tab-network', this)">NETWORK</button>
+                <button class="tab-btn" onclick="switchTab('tab-broadcast', this)">BROADCAST</button>
+                <button class="tab-btn" onclick="switchTab('tab-economy', this)">ECONOMY</button>
+            </div>
 
-            <div class="section-header">Network Address Dispatch</div>
-            <p style="font-size:10px; color:var(--text-muted); margin-bottom:14px;">Mengirim konfigurasi alamat publik Java & Bedrock ke Discord.</p>
-            <button onclick="sendServerAddress()" id="btn-address" class="exec-btn">DISPATCH ENDPOINT INFO</button>
-            <div id="msg-address" class="log-output"></div>
-        </div>
+            <!-- TAB 1: STATUS -->
+            <div id="tab-status" class="panel-card active">
+                <div class="section-header">Server Telemetry Monitor</div>
+                <div class="status-table">
+                    <div class="status-line">
+                        <span style="color:var(--text-muted)">NODE TARGET</span>
+                        <span style="color:#60a5fa">Basic-7.mineidhost.com:19155</span>
+                    </div>
+                    <div class="status-line">
+                        <span style="color:var(--text-muted)">DAEMON STATUS</span>
+                        <div id="live-status" class="pill loading">INITIALIZING...</div>
+                    </div>
+                    <div class="status-line">
+                        <span style="color:var(--text-muted)">CORE VERSION</span>
+                        <span id="live-version">-</span>
+                    </div>
+                </div>
+                <button onclick="sendDiscordUpdate()" id="btn-status" class="exec-btn" style="margin-bottom:14px;">SYNC TELEMETRY TO DISCORD</button>
+                <div id="msg-status" class="log-output"></div>
 
-        <!-- TAB 2: NETWORK -->
-        <div id="tab-network" class="panel-card">
-            <div class="section-header">Guidelines & Rules Protocol</div>
-            <div class="input-group">
-                <label class="input-label">PROTOCOL TITLE</label>
-                <input type="text" id="guide-title" class="control-field" placeholder="RULES & GUIDELINES">
-            </div>
-            <div class="input-group">
-                <label class="input-label">PROTOCOL CONTENT (AUTO SMALL-CAPS)</label>
-                <textarea id="guide-text" class="control-field" placeholder="Tuliskan aturan server..."></textarea>
-            </div>
-            <button onclick="sendGuidelines()" id="btn-guide" class="exec-btn" style="margin-bottom:18px;">DISPATCH GUIDELINES</button>
-            <div id="msg-guide" class="log-output" style="margin-bottom:18px;"></div>
+                <div style="border-top: 1px solid var(--border); margin: 18px 0;"></div>
 
-            <div class="section-header">Broadcast Announcement</div>
-            <div class="input-group">
-                <label class="input-label">BROADCAST TITLE</label>
-                <input type="text" id="ann-title" class="control-field" placeholder="UPDATE PATCH V1.5">
+                <div class="section-header">Network Address Dispatch</div>
+                <p style="font-size:10px; color:var(--text-muted); margin-bottom:14px;">Mengirim konfigurasi alamat publik Java & Bedrock ke Discord.</p>
+                <button onclick="sendServerAddress()" id="btn-address" class="exec-btn">DISPATCH ENDPOINT INFO</button>
+                <div id="msg-address" class="log-output"></div>
             </div>
-            <div class="input-group">
-                <label class="input-label">BROADCAST MESSAGE</label>
-                <textarea id="ann-text" class="control-field" placeholder="Tuliskan isi pengumuman..."></textarea>
-            </div>
-            <button onclick="sendAnnouncement()" id="btn-ann" class="exec-btn">BROADCAST ANNOUNCEMENT</button>
-            <div id="msg-ann" class="log-output"></div>
-        </div>
 
-        <!-- TAB 3: BROADCAST -->
-        <div id="tab-broadcast" class="panel-card">
-            <div class="section-header">Payment Gateway Configuration</div>
-            <div class="input-group">
-                <label class="input-label">GATEWAY TITLE</label>
-                <input type="text" id="pay-title" class="control-field" placeholder="QRIS & BANK TRANSFER">
-            </div>
-            <div class="input-group">
-                <label class="input-label">PAYMENT INSTRUCTIONS</label>
-                <textarea id="pay-text" class="control-field" placeholder="Scan QRIS atau transfer..."></textarea>
-            </div>
-            <div class="input-group">
-                <label class="input-label">ATTACHMENT (QRIS IMAGE / FILE)</label>
-                <input type="file" id="pay-image" class="control-field" accept="image/*" style="padding: 7px; cursor: pointer;">
-            </div>
-            <button onclick="sendPayment()" id="btn-pay" class="exec-btn" style="margin-bottom:18px;">DISPATCH PAYMENT GATEWAY</button>
-            <div id="msg-pay" class="log-output" style="margin-bottom:18px;"></div>
+            <!-- TAB 2: NETWORK -->
+            <div id="tab-network" class="panel-card">
+                <div class="section-header">Guidelines & Rules Protocol</div>
+                <div class="input-group">
+                    <label class="input-label">PROTOCOL TITLE</label>
+                    <input type="text" id="guide-title" class="control-field" placeholder="RULES & GUIDELINES">
+                </div>
+                <div class="input-group">
+                    <label class="input-label">PROTOCOL CONTENT (AUTO SMALL-CAPS)</label>
+                    <textarea id="guide-text" class="control-field" placeholder="Tuliskan aturan server..."></textarea>
+                </div>
+                <button onclick="sendGuidelines()" id="btn-guide" class="exec-btn" style="margin-bottom:18px;">DISPATCH GUIDELINES</button>
+                <div id="msg-guide" class="log-output" style="margin-bottom:18px;"></div>
 
-            <div class="section-header">Promo & Discount Event</div>
-            <div class="input-group">
-                <label class="input-label">EVENT TITLE</label>
-                <input type="text" id="promo-title" class="control-field" placeholder="FLASH SALE 50% OFF">
+                <div class="section-header">Broadcast Announcement</div>
+                <div class="input-group">
+                    <label class="input-label">BROADCAST TITLE</label>
+                    <input type="text" id="ann-title" class="control-field" placeholder="UPDATE PATCH V1.5">
+                </div>
+                <div class="input-group">
+                    <label class="input-label">BROADCAST MESSAGE</label>
+                    <textarea id="ann-text" class="control-field" placeholder="Tuliskan isi pengumuman..."></textarea>
+                </div>
+                <button onclick="sendAnnouncement()" id="btn-ann" class="exec-btn">BROADCAST ANNOUNCEMENT</button>
+                <div id="msg-ann" class="log-output"></div>
             </div>
-            <div class="input-group">
-                <label class="input-label">EVENT DETAILS</label>
-                <textarea id="promo-text" class="control-field" placeholder="Gunakan kode promo..."></textarea>
-            </div>
-            <button onclick="sendPromo()" id="btn-promo" class="exec-btn">DISPATCH PROMO EVENT</button>
-            <div id="msg-promo" class="log-output"></div>
-        </div>
 
-        <!-- TAB 4: ECONOMY -->
-        <div id="tab-economy" class="panel-card">
-            <div class="section-header">Premium Ranks Catalog</div>
-            <div class="input-group">
-                <label class="input-label">CATALOG TITLE</label>
-                <input type="text" id="rank-title" class="control-field" placeholder="PREMIUM RANK LIST">
-            </div>
-            <div class="input-group">
-                <label class="input-label">RANK ITEMS & PRICING</label>
-                <textarea id="rank-text" class="control-field" placeholder="[ VIP ] - 25K/Bulan&#10;• Prefix khusus"></textarea>
-            </div>
-            <button onclick="sendRank()" id="btn-rank" class="exec-btn" style="margin-bottom:18px;">DISPATCH RANK CATALOG</button>
-            <div id="msg-rank" class="log-output" style="margin-bottom:18px;"></div>
+            <!-- TAB 3: BROADCAST -->
+            <div id="tab-broadcast" class="panel-card">
+                <div class="section-header">Payment Gateway Configuration</div>
+                <div class="input-group">
+                    <label class="input-label">GATEWAY TITLE</label>
+                    <input type="text" id="pay-title" class="control-field" placeholder="QRIS & BANK TRANSFER">
+                </div>
+                <div class="input-group">
+                    <label class="input-label">PAYMENT INSTRUCTIONS</label>
+                    <textarea id="pay-text" class="control-field" placeholder="Scan QRIS atau transfer..."></textarea>
+                </div>
+                <div class="input-group">
+                    <label class="input-label">ATTACHMENT (QRIS IMAGE / FILE)</label>
+                    <input type="file" id="pay-image" class="control-field" accept="image/*" style="padding: 7px; cursor: pointer;">
+                </div>
+                <button onclick="sendPayment()" id="btn-pay" class="exec-btn" style="margin-bottom:18px;">DISPATCH PAYMENT GATEWAY</button>
+                <div id="msg-pay" class="log-output" style="margin-bottom:18px;"></div>
 
-            <div class="section-header">Shards Top-Up Catalog</div>
-            <div class="input-group">
-                <label class="input-label">CATALOG TITLE</label>
-                <input type="text" id="shards-title" class="control-field" placeholder="SHARDS TOP UP CATALOG">
+                <div class="section-header">Promo & Discount Event</div>
+                <div class="input-group">
+                    <label class="input-label">EVENT TITLE</label>
+                    <input type="text" id="promo-title" class="control-field" placeholder="FLASH SALE 50% OFF">
+                </div>
+                <div class="input-group">
+                    <label class="input-label">EVENT DETAILS</label>
+                    <textarea id="promo-text" class="control-field" placeholder="Gunakan kode promo..."></textarea>
+                </div>
+                <button onclick="sendPromo()" id="btn-promo" class="exec-btn">DISPATCH PROMO EVENT</button>
+                <div id="msg-promo" class="log-output"></div>
             </div>
-            <div class="input-group">
-                <label class="input-label">SHARDS PRICING DATA</label>
-                <textarea id="shards-text" class="control-field" placeholder="100 Shards = Rp 10.000"></textarea>
-            </div>
-            <button onclick="sendShards()" id="btn-shards" class="exec-btn">DISPATCH SHARDS CATALOG</button>
-            <div id="msg-shards" class="log-output"></div>
-        </div>
 
-        <div class="panel-footer">
-            GRIMVERSE CORE SYSTEM // SECURE PROTOCOL v5.2
+            <!-- TAB 4: ECONOMY -->
+            <div id="tab-economy" class="panel-card">
+                <div class="section-header">Premium Ranks Catalog</div>
+                <div class="input-group">
+                    <label class="input-label">CATALOG TITLE</label>
+                    <input type="text" id="rank-title" class="control-field" placeholder="PREMIUM RANK LIST">
+                </div>
+                <div class="input-group">
+                    <label class="input-label">RANK ITEMS & PRICING</label>
+                    <textarea id="rank-text" class="control-field" placeholder="[ VIP ] - 25K/Bulan&#10;• Prefix khusus"></textarea>
+                </div>
+                <button onclick="sendRank()" id="btn-rank" class="exec-btn" style="margin-bottom:18px;">DISPATCH RANK CATALOG</button>
+                <div id="msg-rank" class="log-output" style="margin-bottom:18px;"></div>
+
+                <div class="section-header">Shards Top-Up Catalog</div>
+                <div class="input-group">
+                    <label class="input-label">CATALOG TITLE</label>
+                    <input type="text" id="shards-title" class="control-field" placeholder="SHARDS TOP UP CATALOG">
+                </div>
+                <div class="input-group">
+                    <label class="input-label">SHARDS PRICING DATA</label>
+                    <textarea id="shards-text" class="control-field" placeholder="100 Shards = Rp 10.000"></textarea>
+                </div>
+                <button onclick="sendShards()" id="btn-shards" class="exec-btn">DISPATCH SHARDS CATALOG</button>
+                <div id="msg-shards" class="log-output"></div>
+            </div>
+
+            <div class="panel-footer">
+                GRIMVERSE CORE SYSTEM // SECURE PROTOCOL v5.3
+            </div>
         </div>
     </div>
 
@@ -387,6 +434,25 @@
         var CHECK_PORT = "19155";
         var DISPLAY_IP = "mc.grimverse.xyz";
         var DISPLAY_PORT = "19192";
+
+        function verifyPassword() {
+            var inputPass = document.getElementById('login-pass').value;
+            var msg = document.getElementById('login-msg');
+            if (inputPass === "Gv2026") {
+                document.getElementById('login-screen').style.display = 'none';
+                document.getElementById('app-container').style.display = 'flex';
+                fetchServerStatus();
+            } else {
+                msg.innerText = "ACCESS DENIED: Password salah!";
+            }
+        }
+
+        // Enter key support untuk login
+        document.getElementById('login-pass').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                verifyPassword();
+            }
+        });
 
         function switchTab(tabId, btnElement) {
             var allTabs = document.querySelectorAll('.panel-card');
@@ -636,9 +702,10 @@
         window.onload = function() { 
             var allBtns = document.querySelectorAll('.exec-btn');
             for(var i = 0; i < allBtns.length; i++) {
-                allBtns[i].setAttribute('data-original-text', allBtns[i].innerText);
+                if(allBtns[i].id !== '') {
+                    allBtns[i].setAttribute('data-original-text', allBtns[i].innerText);
+                }
             }
-            fetchServerStatus(); 
         };
     </script>
 </body>
